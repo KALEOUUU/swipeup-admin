@@ -1,17 +1,13 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useState } from 'react';
+import theme from '../components/theme';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient());
-    const [theme] = useState(() => createTheme({
-        palette: {
-            mode: 'light',
-        },
-    }));
 
     return (
         <QueryClientProvider client={queryClient}>
