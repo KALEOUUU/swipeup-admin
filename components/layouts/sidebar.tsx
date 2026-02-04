@@ -36,7 +36,7 @@ export default function Sidebar({ role }: SidebarProps) {
     { text: 'Register Stan', icon: <StoreIcon />, path: '/superadmin-dashboard/register-stan' },
   ] : [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
-    { text: 'Produk', icon: <InventoryIcon />, path: '/admin-dashboard/products' },
+    { text: 'Menu', icon: <InventoryIcon />, path: '/admin-dashboard/menu' },
     { text: 'Transaksi', icon: <ShoppingCartIcon />, path: '/admin-dashboard/orders' },
     { text: 'Laporan', icon: <AssessmentIcon />, path: '/admin-dashboard/reports' },
     { text: 'Pelanggan', icon: <PeopleIcon />, path: '/admin-dashboard/customers' },

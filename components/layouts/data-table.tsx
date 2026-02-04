@@ -13,7 +13,7 @@ interface Column {
   label: string;
   minWidth?: number;
   align?: 'left' | 'center' | 'right';
-  format?: (value) => React.ReactNode;
+  format?: (value: unknown, row?: Record<string, unknown>) => React.ReactNode;
 }
 
 interface DataTableProps {
@@ -152,7 +152,7 @@ export default function DataTable({
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align || 'left'} sx={{ py: 2 }}>
-                         {column.format ? column.format(value) : value}
+                         {column.format ? column.format(value, row) : value}
                       </TableCell>
                     );
                   })}

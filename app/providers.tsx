@@ -1,6 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; // Tambahkan import untuk DevTools
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useState } from 'react';
@@ -15,6 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 <CssBaseline />
                 {children}
             </ThemeProvider>
+            <ReactQueryDevtools initialIsOpen={false} /> {/* Tambahkan DevTools di sini */}
         </QueryClientProvider>
     );
 }
