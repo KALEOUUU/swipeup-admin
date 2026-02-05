@@ -1,13 +1,13 @@
 export interface Menu {
     id: number;
-    nama_makanan: string; // Ubah dari nama_produk ke nama_makanan sesuai response API
+    nama_makanan: string;
     harga: number;
-    stock: number; // Ubah dari stok ke stock sesuai response API
-    jenis?: string; // Tambahkan field opsional lainnya jika diperlukan
-    foto?: string;
+    jenis: string;
+    stock: number;
+    foto: string;
+    id_stan: number;
     deskripsi?: string;
     is_available?: boolean;
-    id_stan?: number;
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string | null;
@@ -37,7 +37,7 @@ export interface Menu {
 
 export interface MenuResponse {
     success: boolean;
-    message: string; // Tambahkan message sesuai response
+    message: string;
     data: Menu[];
 }
 
@@ -76,4 +76,9 @@ export interface GetMenuResponse {
     success: boolean;
     message: string;
     data: Menu;
-} 
+}
+
+export interface GetMenusByStanResponse {
+    success: boolean;
+    data: Menu[];
+}

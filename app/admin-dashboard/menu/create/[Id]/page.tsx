@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -91,7 +91,7 @@ export default function EditMenuPage() {
     setImagePreview(null);
   };
 
-  const onSubmit = async (data: UpdateMenuSchemaType) => {
+  const onSubmit: SubmitHandler<UpdateMenuSchemaType> = async (data) => {
     if (!id) return;
     setIsSubmitting(true);
     try {
@@ -286,7 +286,7 @@ export default function EditMenuPage() {
               </Typography>
 
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid component="div" item xs={12} md={6}>
                   <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                     Harga
                   </Typography>
@@ -305,7 +305,7 @@ export default function EditMenuPage() {
                     helperText={errors.harga?.message}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid component="div" item xs={12} md={6}>
                   <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                     Stock
                   </Typography>
@@ -319,7 +319,7 @@ export default function EditMenuPage() {
                     helperText={errors.stock?.message}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid component="div" item xs={12} md={6}>
                   <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                     ID Stan
                   </Typography>

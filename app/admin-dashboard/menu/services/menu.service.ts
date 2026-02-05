@@ -1,5 +1,15 @@
-import api from '@/lib/api';
-import { METHODS } from '@/lib/constant';
+import api from '../../../../lib/api';
+import { METHODS } from '../../../../lib/constant';
+import { GetMenusByStanResponse } from '../types/menu.types';
+
+export const getMenusByStan = async (stanId: number): Promise<GetMenusByStanResponse> => {
+  const response = await api.request({
+    method: METHODS.GET,
+    url: `/api/public/menu/by-stan?stan_id=${stanId}`,
+  });
+  return response.data;
+};
+
 import { Menu, MenuResponse, CreateMenuInput, CreateMenuResponse, UpdateMenuInput, UpdateMenuResponse, GetMenuResponse } from '../types/menu.type';
 
 export const menuService = {

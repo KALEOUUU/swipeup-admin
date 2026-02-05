@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Box,
@@ -12,7 +12,6 @@ import {
     TextField,
     Card,
     CardContent,
-    IconButton,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -55,7 +54,7 @@ export default function CreateMenuPage() {
         setImagePreview(null);
     };
 
-    const onSubmit = async (data: CreateMenuSchemaType) => {
+    const onSubmit: SubmitHandler<CreateMenuSchemaType> = async (data) => {
         setIsSubmitting(true);
         try {
             await menuService.createMenu(data);
@@ -257,7 +256,7 @@ export default function CreateMenuPage() {
                             </Typography>
 
                             <Grid container spacing={3}>
-                                <Grid item xs={12} md={6}>
+                                <Grid component="div" item xs={12} md={6}>
                                     <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                                         Harga
                                     </Typography>
@@ -276,7 +275,7 @@ export default function CreateMenuPage() {
                                         helperText={errors.harga?.message || 'Harga untuk menu ini'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid component="div" item xs={12} md={6}>
                                     <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                                         Stock
                                     </Typography>
@@ -290,7 +289,7 @@ export default function CreateMenuPage() {
                                         helperText={errors.stock?.message || 'Jumlah stock tersedia'}
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid component="div" item xs={12} md={6}>
                                     <Typography variant="subtitle2" fontWeight="medium" sx={{ mb: 1 }}>
                                         ID Stan
                                     </Typography>

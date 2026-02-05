@@ -6,6 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import StoreIcon from '@mui/icons-material/Store';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { removeToken, getRoleFromToken, getToken } from '@/lib/token';
@@ -37,6 +38,7 @@ export default function Sidebar({ role }: SidebarProps) {
   ] : [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
     { text: 'Menu', icon: <InventoryIcon />, path: '/admin-dashboard/menu' },
+    { text: 'Discount', icon: <LocalOfferIcon />, path: '/admin-dashboard/discount' },
     { text: 'Transaksi', icon: <ShoppingCartIcon />, path: '/admin-dashboard/orders' },
     { text: 'Laporan', icon: <AssessmentIcon />, path: '/admin-dashboard/reports' },
     { text: 'Pelanggan', icon: <PeopleIcon />, path: '/admin-dashboard/customers' },

@@ -17,6 +17,7 @@ export interface LoginResponse {
       // Tambahkan field lain sesuai dokumentasi API
     };
     token: string;
+    stan_id?: number;
   };
 }
 
@@ -43,6 +44,12 @@ export const loginService = async (data: LoginRequest): Promise<LoginResponse> =
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('authToken', response.data.data.token);
+      // Simpan stan_id jika ada
+      if (response.data.data.stan_id) {
+        localStorage.setItem('stanId', response.data.data.stan_id.toString());
+      } else {
+        console.warn('stan_id not found in response');
+      }
     }
 
     return response.data;
