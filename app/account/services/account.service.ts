@@ -1,4 +1,4 @@
-import api from '@/lib/api';
+import api from '@/lib/axiosInstance';
 import { METHODS } from '@/lib/constant';
 import { AxiosError } from 'axios'; // Add this import for proper error typing
 
@@ -20,32 +20,41 @@ export interface RegisterResponse {
   };
 }
 
+// Update interface untuk login response (hapus success, asumsikan data langsung)
+export interface LoginResponse {
+  user: {
+    id: string;
+    username: string;
+    role: string;
+  };
+  token: string;
+  stan_id?: number;
+}
+
 // Service function untuk login
 export const loginService = async (data: LoginRequest): Promise<LoginResponse> => {
   try {
     const response = await api.request<LoginResponse>({
       method: METHODS.POST,
-      url: '/api/v1/auth/login',
+      url: 'auth/login',
       data,
     });
 
-    if (response.data.success !== true) {
-      throw new Error('Login failed: Response success is not true');
-    }
-
-    if (!response.data.data.user) {
+    // Hapus pengecekan success, asumsikan response langsung data
+    if (!response.data.user) {
       throw new Error('Login failed: User data is missing');
     }
 
-    if (!response.data.data.token || typeof response.data.data.token !== 'string' || response.data.data.token.length === 0) {
+    if (!response.data.token || typeof response.data.token !== 'string' || response.data.token.length === 0) {
       throw new Error('Login failed: Token is invalid or empty');
     }
 
     if (typeof window !== 'undefined') {
-      localStorage.setItem('authToken', response.data.data.token);
+      localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('userRole', response.data.user.role); // Simpan role untuk routing
       // Simpan stan_id jika ada
-      if (response.data.data.stan_id) {
-        localStorage.setItem('stanId', response.data.data.stan_id.toString());
+      if (response.data.stan_id) {
+        localStorage.setItem('stanId', response.data.stan_id.toString());
       } else {
         console.warn('stan_id not found in response');
       }
@@ -75,7 +84,7 @@ export const registerService = async (data: RegisterRequest): Promise<RegisterRe
   try {
     const response = await api.request({
       method: METHODS.POST,
-      url: '/api/v1/auth/register',
+      url: 'auth/register',
       data,
       // Hapus headers Authorization karena tidak memerlukan token
     });

@@ -5,15 +5,25 @@ import { Box, Stack, Link as MuiLink } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation'; // Tambahkan import useRouter
 import CustomCard from '@/components/molecules/card';
 import ButtonWithText from '@/components/molecules/button-with-text';
 import InputField from '@/components/atoms/input-fields';
 import CustomTypography from '@/components/atoms/typography';
-import { loginSchema, LoginSchemaType } from '../validation/aacount.validation';
+import { loginSchema, LoginSchemaType } from '@/app/account/validation/aacount.validation';
 import { loginService } from '@/app/account/services/account.service';
 import { showSuccess, showError } from '@/hook/useToast';
-import { getRoleFromToken } from '@/lib/token';
+
+// Fungsi untuk decode role dari token JWT
+const getRoleFromToken = (token: string): string | null => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};
 
 export default function LoginPage() {
   const theme = useTheme();
@@ -36,15 +46,14 @@ export default function LoginPage() {
       showSuccess('Login successful!');
 
       // Decode token untuk mendapatkan role dan redirect sesuai
-      const token = response.data.token;
+      const token = response.token;
       const role = getRoleFromToken(token);
-      if (role === 'admin_stan') {
-        router.push('/admin-dashboard');
-      } else if (role === 'superadmin') {
-        router.push('/superadmin-dashboard');
+      if (role === 'admin') {
+        router.push('/admin');
+      } else if (role === 'stand_admin') {
+        router.push('/stand');
       } else {
-        // Default redirect jika role tidak dikenali
-        router.push('/dashboard');
+        router.push('/account/login');
       }
     } catch (error) {
       console.error('Login error:', error.message);
@@ -65,11 +74,11 @@ export default function LoginPage() {
     >
       <CustomCard
         sx={{
-          maxWidth: 450,
+          maxWidth: 500,
           width: '100%',
           borderRadius: 4,
           boxShadow: `0 8px 32px rgba(${parseInt(theme.palette.primary.main.slice(1, 3), 16)}, ${parseInt(theme.palette.primary.main.slice(3, 5), 16)}, ${parseInt(theme.palette.primary.main.slice(5, 7), 16)}, 0.1)`,
-          p: 2,
+          p: 3,
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,7 +88,7 @@ export default function LoginPage() {
                 SwipeUp
               </CustomTypography>
               <CustomTypography variant="medium" color="text.secondary">
-                Welcome back! Please login to your account.
+                Login to Your Account
               </CustomTypography>
             </Box>
 
@@ -88,7 +97,7 @@ export default function LoginPage() {
                 label="Username"
                 variant="outlined"
                 fullWidth
-                placeholder="siswa001"
+                placeholder="admin_stan_001"
                 {...register('username')}
                 error={!!errors.username}
                 helperText={errors.username?.message}
@@ -105,11 +114,6 @@ export default function LoginPage() {
                 helperText={errors.password?.message}
                 sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
               />
-              <Box display="flex" justifyContent="flex-end">
-                <MuiLink component="button" variant="body2" underline="hover" color="primary">
-                  Forgot Password?
-                </MuiLink>
-              </Box>
             </Stack>
 
             <ButtonWithText

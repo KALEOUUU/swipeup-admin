@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // Buat instance Axios kustom
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/', // Diubah ke 8080 sesuai dokumentasi
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api/v1', // Diubah ke 8080 sesuai dokumentasi
   timeout: 10000, // Timeout 10 detik
   headers: {
     'Content-Type': 'application/json',

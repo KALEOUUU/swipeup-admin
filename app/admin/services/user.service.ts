@@ -1,4 +1,4 @@
-import api from '@/lib/api';
+import api from '@/lib/axiosInstance';
 import { METHODS } from '@/lib/constant';
 import {
     User,

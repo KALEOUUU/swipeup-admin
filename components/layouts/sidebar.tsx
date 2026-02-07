@@ -13,7 +13,7 @@ import { removeToken, getRoleFromToken, getToken } from '@/lib/token';
 import { showSuccess } from '@/hook/useToast';
 
 interface SidebarProps {
-  role: 'superadmin' | 'admin_stan';
+  role: 'admin' | 'stand';
 }
 
 export default function Sidebar({ role }: SidebarProps) {
@@ -22,8 +22,8 @@ export default function Sidebar({ role }: SidebarProps) {
   const theme = useTheme();
 
   // Mock user data - replace with real data from context/token
-  const userName = role === 'superadmin' ? 'Super Admin' : 'Toko Bening';
-  const userRole = role === 'superadmin' ? 'Administrator' : 'Admin Panel';
+  const userName = role === 'admin' ? 'Admin' : 'Toko Bening';
+  const userRole = role === 'admin' ? 'Administrator' : 'Admin Panel';
 
   const handleLogout = () => {
     removeToken();
@@ -31,17 +31,17 @@ export default function Sidebar({ role }: SidebarProps) {
     router.push('/account/login');
   };
 
-  const menuItems = role === 'superadmin' ? [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/superadmin-dashboard' },
-    { text: 'Manage Users', icon: <PeopleIcon />, path: '/superadmin-dashboard/users' },
-    { text: 'Register Stan', icon: <StoreIcon />, path: '/superadmin-dashboard/register-stan' },
+  const menuItems = role === 'admin' ? [
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin' },
+    { text: 'Manage Users', icon: <PeopleIcon />, path: '/admin/users' },
+    { text: 'Register Stan', icon: <StoreIcon />, path: '/admin/register-stan' },
   ] : [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin-dashboard' },
-    { text: 'Menu', icon: <InventoryIcon />, path: '/admin-dashboard/menu' },
-    { text: 'Discount', icon: <LocalOfferIcon />, path: '/admin-dashboard/discount' },
-    { text: 'Transaksi', icon: <ShoppingCartIcon />, path: '/admin-dashboard/orders' },
-    { text: 'Laporan', icon: <AssessmentIcon />, path: '/admin-dashboard/reports' },
-    { text: 'Pelanggan', icon: <PeopleIcon />, path: '/admin-dashboard/customers' },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/stand' },
+    { text: 'Menu', icon: <InventoryIcon />, path: '/stand/menu' },
+    { text: 'Discount', icon: <LocalOfferIcon />, path: '/stand/discount' },
+    { text: 'Transaksi', icon: <ShoppingCartIcon />, path: '/stand/orders' },
+    { text: 'Laporan', icon: <AssessmentIcon />, path: '/stand/reports' },
+    { text: 'Pelanggan', icon: <PeopleIcon />, path: '/stand/customers' },
   ];
 
   return (
@@ -61,7 +61,7 @@ export default function Sidebar({ role }: SidebarProps) {
     >
       <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <Avatar 
-          src={role === 'admin_stan' ? "https://ui-avatars.com/api/?name=Toko+Bening&background=0D5295&color=fff" : undefined}
+          src={role === 'stand' ? "https://ui-avatars.com/api/?name=Toko+Bening&background=0D5295&color=fff" : undefined}
           sx={{ 
             width: 48, 
             height: 48,
