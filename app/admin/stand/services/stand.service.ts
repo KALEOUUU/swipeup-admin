@@ -5,7 +5,12 @@ import { StandCanteen, CreateStandCanteenRequest, UpdateStandCanteenRequest } fr
 export const getAllStandCanteens = async (): Promise<StandCanteen[]> => {
   try {
     const response = await api.get('/admin/stand-canteens');
-    return response.data; 
+    // Map qris to qris if API still uses qris
+    const data = response.data.map((item: unknown) => ({
+      ...item,
+      qris: item.qris,
+    }));
+    return data;
   } catch (error) {
     console.error('Error fetching stand canteens:', error);
     throw error;
@@ -16,7 +21,12 @@ export const getAllStandCanteens = async (): Promise<StandCanteen[]> => {
 export const getStandCanteenById = async (id: number): Promise<StandCanteen> => {
   try {
     const response = await api.get(`/admin/stand-canteens/${id}`);
-    return response.data; 
+    // Map qris to qris
+    const data = {
+      ...response.data,
+      qris: response.data.qris,
+    };
+    return data;
   } catch (error) {
     console.error('Error fetching stand canteen by ID:', error);
     throw error;

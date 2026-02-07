@@ -27,12 +27,12 @@ export interface StandCanteen {
 export interface CreateStandCanteenRequest {
   stand_id: number;
   store_name: string;
-  qris_base64: string;
+  qris: string;
   is_active: boolean;
 }
 
 export interface UpdateStandCanteenRequest {
   store_name: string;
-  qris_base64: string;
+  qris: string;
   is_active: boolean;
 }

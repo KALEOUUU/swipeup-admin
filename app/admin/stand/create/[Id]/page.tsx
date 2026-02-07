@@ -33,7 +33,7 @@ export default function UpdateStandCanteenPage() {
     resolver: yupResolver(updateStandCanteenSchema),
     defaultValues: {
       store_name: '',
-      qris_base64: '',
+      qris: '',
       is_active: true,
     },
   });
@@ -46,7 +46,7 @@ export default function UpdateStandCanteenPage() {
       try {
         const data: StandCanteen = await getStandCanteenById(id);
         setValue('store_name', data.store_name);
-        setValue('qris_base64', data.qris);
+        setValue('qris', data.qris);
         setValue('is_active', data.is_active);
       } catch (error) {
         showError('Failed to fetch stand canteen data');
@@ -64,7 +64,7 @@ export default function UpdateStandCanteenPage() {
     if (file) {
       try {
         const base64 = await convertImageToBase64(file);
-        setValue('qris_base64', base64);
+        setValue('qris', base64);
       } catch (error) {
         showError('Failed to convert image to base64');
       }
@@ -122,9 +122,9 @@ export default function UpdateStandCanteenPage() {
                   onChange={handleQrisFileChange}
                   sx={{ width: '100%' }}
                 />
-                {errors.qris_base64 && (
+                {errors.qris && (
                   <CustomTypography variant="body2" color="error" sx={{ mt: 1 }}>
-                    {errors.qris_base64.message}
+                    {errors.qris.message}
                   </CustomTypography>
                 )}
               </Box>

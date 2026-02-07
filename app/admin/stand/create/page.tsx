@@ -31,7 +31,7 @@ export default function CreateStandCanteenPage() {
     defaultValues: {
       stand_id: 0,
       store_name: '',
-      qris_base64: '',
+      qris: '',
       is_active: true,
     },
   });
@@ -43,7 +43,7 @@ export default function CreateStandCanteenPage() {
     if (file) {
       try {
         const base64 = await convertImageToBase64(file);
-        setValue('qris_base64', base64);
+        setValue('qris', base64);
       } catch (error) {
         showError('Failed to convert image to base64');
       }
@@ -98,9 +98,9 @@ export default function CreateStandCanteenPage() {
                   onChange={handleQrisFileChange}
                   sx={{ width: '100%' }}
                 />
-                {errors.qris_base64 && (
+                {errors.qris && (
                   <CustomTypography variant="body2" color="error" sx={{ mt: 1 }}>
-                    {errors.qris_base64.message}
+                    {errors.qris.message}
                   </CustomTypography>
                 )}
               </Box>

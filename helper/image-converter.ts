@@ -1,15 +1,16 @@
 import imageCompression from 'browser-image-compression';
 
 /**
- * Converts an image file to a base64 string (without data URL prefix), with compression to reduce size.
+ * Converts an image file to a base64 string (without data URL prefix), with aggressive compression to reduce size.
  * @param file - The image file to convert.
  * @returns A promise that resolves to the base64 string.
  */
 export const convertImageToBase64 = async (file: File): Promise<string> => {
   const options = {
-    maxSizeMB: 1, // Maximum size in MB
-    maxWidthOrHeight: 800, // Maximum width or height
+    maxSizeMB: 0.1, // Maximum size 100KB untuk menghindari error database
+    maxWidthOrHeight: 300, // Maximum width or height untuk QRIS cukup 300px
     useWebWorker: true, // Use web worker for better performance
+    initialQuality: 0.6, // Kualitas awal 60%
   };
 
   try {
