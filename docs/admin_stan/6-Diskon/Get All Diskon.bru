@@ -1,0 +1,75 @@
+meta {
+  name: Get All Diskon
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/admin-stan/discounts
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  # Get All Diskon
+  
+  Mengambil semua data diskon dengan pagination.
+  
+  ## Endpoint
+  GET /api/diskon
+  
+  ## Authentication
+  Required: Bearer Token (Admin access: Superadmin atau Admin Stan)
+  
+  ## Query Parameters
+  - `page` (int, optional): Nomor halaman (default: 1)
+  - `limit` (int, optional): Jumlah data per halaman (default: 10)
+  
+  ## Response
+  Returns paginated list of all discounts including:
+  - Global discounts (tipe_diskon: "global")
+  - Stan discounts (tipe_diskon: "stan")
+  - Menu discounts (tipe_diskon: "menu")
+  
+  ## Response Structure
+  ```json
+  {
+    "success": true,
+    "message": "Diskon retrieved successfully",
+    "data": [...],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 50,
+      "total_pages": 5
+    }
+  }
+  ```
+  
+  ## Notes
+  - Menampilkan semua tipe diskon (global, stan, menu)
+  - Menggunakan pagination untuk performa yang lebih baik
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response success is true", function() {
+    expect(res.getBody().success).to.equal(true);
+  });
+  
+  test("Response data is array", function() {
+    expect(res.getBody().data).to.be.an('array');
+  });
+  
+  test("Has pagination info", function() {
+    expect(res.getBody().pagination).to.exist;
+    expect(res.getBody().pagination.page).to.exist;
+    expect(res.getBody().pagination.limit).to.exist;
+  });
+}

@@ -3,11 +3,13 @@ export interface LoginFormData {
   password: string;
 }
 
-// Tambahkan types untuk register stan
-export interface RegisterStanRequest {
+// Tambahkan types untuk register
+export interface RegisterRequest {
   username: string;
   password: string;
-  nama_stan: string;
-  nama_pemilik: string;
-  telp: string;
+  role: string;
+  name: string;
+  email: string;
+  phone: string;
+  rfid_card: string;
 }

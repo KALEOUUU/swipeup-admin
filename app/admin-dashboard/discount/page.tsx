@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, Stack, Chip } from '@mui/material';
+import { Box, Typography, Button, Chip } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/layouts/sidebar';
 import DataTable from '@/components/layouts/data-table';
-import { getDiscountsByStan } from './service/discount.service';
-import { getStanId, getToken } from '@/lib/token';
-import { Discount } from './types/discount.types';
+import { getAllDiskon, getDiskonByStan } from './service/diskon.service';
+import { getStanId, getToken, getRoleFromToken } from '@/lib/token';
+import { Diskon } from './types/diskon.types';
 import { showError } from '@/hook/useToast';
 
 interface Column {
@@ -20,10 +20,12 @@ interface Column {
 
 export default function DiscountPage() {
   const router = useRouter();
-  const [discounts, setDiscounts] = useState<Discount[]>([]);
+  const [discounts, setDiscounts] = useState<Diskon[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const role = getRoleFromToken(getToken() ?? '') as 'superadmin' | 'admin_stan';
 
   useEffect(() => {
     const fetchDiscounts = async () => {
@@ -33,23 +35,24 @@ export default function DiscountPage() {
           router.push('/account/login');
           return;
         }
-        
-        const stanId = getStanId();
-        console.log('Stan ID from localStorage:', stanId);
 
-        if (!stanId) {
-          console.error('Stan ID not found in localStorage');
-          showError('Stan ID not found. Please relogin.');
-          setLoading(false);
-          return;
-        }
+        let data: Diskon[];
 
-        const response = await getDiscountsByStan(stanId);
-        if (response.success) {
-            setDiscounts(response.data);
+        if (role === 'superadmin') {
+          // SuperAdmin can see all discounts
+          data = await getAllDiskon();
         } else {
-            showError('Failed to fetch discounts');
+          // Admin Stan can only see their stan's discounts
+          const stanId = getStanId();
+          if (!stanId) {
+            showError('Stan ID not found. Please relogin.');
+            setLoading(false);
+            return;
+          }
+          data = await getDiskonByStan(stanId);
         }
+
+        setDiscounts(data);
       } catch (error) {
         console.error('Failed to fetch discounts:', error);
         showError('Failed to fetch discounts');
@@ -59,7 +62,7 @@ export default function DiscountPage() {
     };
 
     fetchDiscounts();
-  }, [router]);
+  }, [router, role]);
 
   const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -88,6 +91,21 @@ export default function DiscountPage() {
       format: (value) => `${value}%`,
     },
     {
+      id: 'tipe_diskon',
+      label: 'Tipe',
+      minWidth: 100,
+      format: (value: unknown) => {
+        const v = String(value);
+        return (
+          <Chip
+            label={v}
+            color={v === 'global' ? 'primary' : v === 'stan' ? 'secondary' : 'default'}
+            size="small"
+          />
+        );
+      },
+    },
+    {
       id: 'tanggal_awal',
       label: 'Tanggal Awal',
       minWidth: 120,
@@ -105,9 +123,13 @@ export default function DiscountPage() {
       minWidth: 100,
       align: 'center',
       format: (value, row) => {
+        const diskon = row as unknown as Diskon;
         const now = new Date();
-        const start = new Date(row.tanggal_awal as string);
-        const end = new Date(row.tanggal_akhir as string);
+        const start = diskon?.tanggal_awal ? new Date(diskon.tanggal_awal) : null;
+        const end = diskon?.tanggal_akhir ? new Date(diskon.tanggal_akhir) : null;
+        if (!start || !end) {
+          return <Chip label="Tidak tersedia" color="default" size="small" />;
+        }
         if (now < start) {
           return <Chip label="Belum Aktif" color="default" size="small" />;
         } else if (now > end) {
@@ -122,22 +144,25 @@ export default function DiscountPage() {
       label: 'Aksi',
       minWidth: 100,
       align: 'center',
-      format: (value, row) => (
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => router.push(`/admin-dashboard/discount/${row.id}`)}
-        >
-          Edit
-        </Button>
-      ),
+      format: (value, row) => {
+        const diskon = row as unknown as Diskon;
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => (diskon?.id ? router.push(`/admin-dashboard/discount/${diskon.id}`) : undefined)}
+          >
+            Detail
+          </Button>
+        );
+      },
     },
   ];
 
   if (loading) {
     return (
       <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f5f5' }}>
-        <Sidebar role="admin_stan" />
+        <Sidebar role={role} />
         <Box sx={{ flexGrow: 1, p: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Typography>Loading...</Typography>
         </Box>
@@ -147,9 +172,8 @@ export default function DiscountPage() {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f5f5f5' }}>
-      <Sidebar role="admin_stan" />
+      <Sidebar role={role} />
       <Box sx={{ flexGrow: 1, p: 4 }}>
-        {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Box>
             <Typography variant="h4" fontWeight="bold">
@@ -161,11 +185,10 @@ export default function DiscountPage() {
           </Box>
         </Box>
 
-        {/* Data Table */}
         <DataTable
           title="Daftar Diskon"
           columns={columns}
-          rows={discounts}
+          rows={discounts as unknown as Record<string, unknown>[]}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}

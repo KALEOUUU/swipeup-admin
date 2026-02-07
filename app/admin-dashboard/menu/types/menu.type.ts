@@ -39,6 +39,12 @@ export interface MenuResponse {
     success: boolean;
     message: string;
     data: Menu[];
+    pagination?: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
 }
 
 export interface CreateMenuInput {
@@ -48,7 +54,7 @@ export interface CreateMenuInput {
     deskripsi: string;
     stock: number;
     foto: string; // Base64 string
-    id_stan: number;
+    // id_stan is not required - automatically set from authenticated user
 }
 
 export interface CreateMenuResponse {
@@ -66,6 +72,14 @@ export interface UpdateMenuInput {
     foto?: string; // Base64 string or URL
 }
 
+export interface UpdateStockInput {
+    stock: number;
+}
+
+export interface AdjustStockInput {
+    adjustment: number; // Positive to increase, negative to decrease
+}
+
 export interface UpdateMenuResponse {
     success: boolean;
     message: string;
@@ -80,5 +94,11 @@ export interface GetMenuResponse {
 
 export interface GetMenusByStanResponse {
     success: boolean;
+    data: Menu[];
+}
+
+export interface SearchMenuResponse {
+    success: boolean;
+    message: string;
     data: Menu[];
 }

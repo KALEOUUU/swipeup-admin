@@ -1,5 +1,6 @@
 import api from '@/lib/api';
 import { METHODS } from '@/lib/constant';
+import { AxiosError } from 'axios'; // Add this import for proper error typing
 
 // Interface untuk request body
 export interface LoginRequest {
@@ -7,17 +8,15 @@ export interface LoginRequest {
   password: string;
 }
 
-// Interface untuk response data
-export interface LoginResponse {
+// Interface untuk register response
+export interface RegisterResponse {
   success: boolean;
   data: {
     user: {
       id: string;
       username: string;
-      // Tambahkan field lain sesuai dokumentasi API
+      role: string;
     };
-    token: string;
-    stan_id?: number;
   };
 }
 
@@ -26,7 +25,7 @@ export const loginService = async (data: LoginRequest): Promise<LoginResponse> =
   try {
     const response = await api.request<LoginResponse>({
       method: METHODS.POST,
-      url: '/api/auth/login', 
+      url: '/api/v1/auth/login',
       data,
     });
 
@@ -54,23 +53,29 @@ export const loginService = async (data: LoginRequest): Promise<LoginResponse> =
 
     return response.data;
   } catch (error) {
-    // Handle error sesuai dokumentasi
-    if (error.response?.status === 401) {
-      throw new Error('Invalid username or password');
+    // Type the error as AxiosError or Error to access properties safely
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) {
+        throw new Error('Invalid username or password');
+      }
+      throw new Error(error.message || 'Login failed');
+    } else if (error instanceof Error) {
+      throw new Error(error.message || 'Login failed');
+    } else {
+      throw new Error('Login failed');
     }
-    throw new Error(error.message || 'Login failed');
   }
 };
 
 // Tambahkan import types
-import { RegisterStanRequest, RegisterStanResponse } from '@/app/account/types/account.types';
+import { RegisterRequest } from '@/app/account/types/account.types';
 
-// Service function untuk register stan (tanpa token)
-export const registerStanService = async (data: RegisterStanRequest): Promise<RegisterStanResponse> => {
+// Service function untuk register (tanpa token)
+export const registerService = async (data: RegisterRequest): Promise<RegisterResponse> => {
   try {
-    const response = await api.request<RegisterStanResponse>({
+    const response = await api.request({
       method: METHODS.POST,
-      url: '/api/auth/register-admin-stan',
+      url: '/api/v1/auth/register',
       data,
       // Hapus headers Authorization karena tidak memerlukan token
     });
@@ -84,13 +89,15 @@ export const registerStanService = async (data: RegisterStanRequest): Promise<Re
       throw new Error('Register failed: Response success is not true');
     }
 
-    if (response.data.data.role !== 'admin_stan') {
-      throw new Error('Register failed: User does not have admin_stan role');
-    }
-
     return response.data;
   } catch (error) {
-    // Handle error
-    throw new Error(error.message || 'Register stan failed');
+    // Type the error as AxiosError or Error to access properties safely
+    if (error instanceof AxiosError) {
+      throw new Error(error.message || 'Register failed');
+    } else if (error instanceof Error) {
+      throw new Error(error.message || 'Register failed');
+    } else {
+      throw new Error('Register failed');
+    }
   }
 };

@@ -10,8 +10,8 @@ import CustomCard from '@/components/molecules/card';
 import ButtonWithText from '@/components/molecules/button-with-text';
 import InputField from '@/components/atoms/input-fields';
 import CustomTypography from '@/components/atoms/typography';
-import { registerStanSchema, RegisterStanSchemaType } from '@/app/account/validation/aacount.validation';
-import { registerStanService } from '@/app/account/services/account.service';
+import { registerSchema, RegisterSchemaType } from '@/app/account/validation/aacount.validation';
+import { registerService } from '@/app/account/services/account.service';
 import { showSuccess, showError } from '@/hook/useToast';
 
 export default function RegisterPage() {
@@ -21,16 +21,16 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterStanSchemaType>({
-    resolver: yupResolver(registerStanSchema),
+  } = useForm<RegisterSchemaType>({
+    resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = async (data: RegisterStanSchemaType) => {
+  const onSubmit = async (data: RegisterSchemaType) => {
     try {
       // Panggil service tanpa token
-      const response = await registerStanService(data);
+      const response = await registerService(data);
       console.log('Register successful:', response);
-      showSuccess('Admin stan registered successfully!');
+      showSuccess('User registered successfully!');
       router.push('/account/login');
     } catch (error) {
       console.error('Register error:', error.message);
@@ -65,7 +65,7 @@ export default function RegisterPage() {
                 SwipeUp
               </CustomTypography>
               <CustomTypography variant="medium" color="text.secondary">
-                Register New Admin Stan
+                Register New User
               </CustomTypography>
             </Box>
 
@@ -74,7 +74,7 @@ export default function RegisterPage() {
                 label="Username"
                 variant="outlined"
                 fullWidth
-                placeholder="admin_stan_001"
+                placeholder="new_student"
                 {...register('username')}
                 error={!!errors.username}
                 helperText={errors.username?.message}
@@ -92,39 +92,60 @@ export default function RegisterPage() {
                 sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
               />
               <InputField
-                label="Nama Stan"
+                label="Role"
                 variant="outlined"
                 fullWidth
-                placeholder="Warung Makan Sejahtera"
-                {...register('nama_stan')}
-                error={!!errors.nama_stan}
-                helperText={errors.nama_stan?.message}
+                placeholder="student"
+                {...register('role')}
+                error={!!errors.role}
+                helperText={errors.role?.message}
                 sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
               />
               <InputField
-                label="Nama Pemilik"
+                label="Name"
                 variant="outlined"
                 fullWidth
-                placeholder="Budi Santoso"
-                {...register('nama_pemilik')}
-                error={!!errors.nama_pemilik}
-                helperText={errors.nama_pemilik?.message}
+                placeholder="John Doe"
+                {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message}
                 sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
               />
               <InputField
-                label="Telp"
+                label="Email"
+                type="email"
                 variant="outlined"
                 fullWidth
-                placeholder="081234567890"
-                {...register('telp')}
-                error={!!errors.telp}
-                helperText={errors.telp?.message}
+                placeholder="john@example.com"
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+              />
+              <InputField
+                label="Phone"
+                variant="outlined"
+                fullWidth
+                placeholder="08123456789"
+                {...register('phone')}
+                error={!!errors.phone}
+                helperText={errors.phone?.message}
+                sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
+              />
+              <InputField
+                label="RFID Card"
+                variant="outlined"
+                fullWidth
+                placeholder="RFID123456"
+                {...register('rfid_card')}
+                error={!!errors.rfid_card}
+                helperText={errors.rfid_card?.message}
                 sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'background.paper' } }}
               />
             </Stack>
 
             <ButtonWithText
-              text={isSubmitting ? 'Registering...' : 'Register Admin Stan'}
+              text={isSubmitting ? 'Registering...' : 'Register User'}
               variant="contained"
               color="primary"
               fullWidth

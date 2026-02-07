@@ -5,10 +5,17 @@ import { Box, Typography, Button, Chip } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import DataTable from '@/components/layouts/data-table';
 import Sidebar from '@/components/layouts/sidebar';
-import { getMenusByStan } from './services/menu.service.ts';
-import { Menu } from './types/menu.types';
-import { getStanId, getRoleFromToken } from '@/lib/token';
+import { getAllMenu } from './services/menu.service';
+import { Menu } from './types/menu.type';
+import { getRoleFromToken, getToken } from '@/lib/token';
 import { showError } from '@/hook/useToast';
+
+interface Column {
+  id: string;
+  label: string;
+  minWidth?: number;
+  format?: (value: unknown, row?: Record<string, unknown>) => React.ReactNode;
+}
 
 export default function MenuPage() {
   const router = useRouter();
@@ -17,25 +24,13 @@ export default function MenuPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const role = getRoleFromToken() as 'superadmin' | 'admin_stan';
+  const role = getRoleFromToken(getToken() ?? '') as 'admin_stan';
 
   useEffect(() => {
     const fetchMenus = async () => {
-      const stanId = getStanId();
-      console.log('Stan ID from localStorage:', stanId);
-
-      if (!stanId) {
-        showError('Stan ID not found. Please login again.');
-        return;
-      }
-
       try {
-        const response = await getMenusByStan(stanId);
-        if (response.success) {
-          setMenus(response.data);
-        } else {
-          showError('Failed to fetch menus');
-        }
+        const data = await getAllMenu();
+        setMenus(data);
       } catch (error) {
         console.error('Failed to fetch menus:', error);
         showError('Failed to fetch menus');
@@ -47,36 +42,42 @@ export default function MenuPage() {
     fetchMenus();
   }, []);
 
-  const columns = [
+  const columns: Column[] = [
     { id: 'nama_makanan', label: 'Nama Makanan', minWidth: 170 },
-    { id: 'harga', label: 'Harga', minWidth: 100, format: (value: number) => `Rp ${value.toLocaleString()}` },
+    { id: 'harga', label: 'Harga', minWidth: 100, format: (value) => `Rp ${(value as number).toLocaleString()}` },
     { id: 'jenis', label: 'Jenis', minWidth: 100 },
     { id: 'stock', label: 'Stock', minWidth: 100 },
     {
       id: 'status',
       label: 'Status',
       minWidth: 100,
-      format: (value: unknown, row: Menu) => (
-        <Chip
-          label={row.stock > 0 ? 'Tersedia' : 'Habis'}
-          color={row.stock > 0 ? 'success' : 'error'}
-          size="small"
-        />
-      ),
+      format: (value, row) => {
+        const menu = row as unknown as Menu;
+        return (
+          <Chip
+            label={menu.stock > 0 ? 'Tersedia' : 'Habis'}
+            color={menu.stock > 0 ? 'success' : 'error'}
+            size="small"
+          />
+        );
+      },
     },
     {
       id: 'actions',
       label: 'Aksi',
       minWidth: 150,
-      format: (value: unknown, row: Menu) => (
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => router.push(`/admin-dashboard/menu/${row.id}`)}
-        >
-          Edit
-        </Button>
-      ),
+      format: (value, row) => {
+        const menu = row as unknown as Menu;
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => router.push(`/admin-dashboard/menu/${menu.id}`)}
+          >
+            Edit
+          </Button>
+        );
+      },
     },
   ];
 
@@ -124,7 +125,7 @@ export default function MenuPage() {
         <DataTable
           title="Daftar Menu"
           columns={columns}
-          rows={menus}
+          rows={menus as unknown as Record<string, unknown>[]}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}

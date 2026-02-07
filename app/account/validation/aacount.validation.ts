@@ -13,8 +13,8 @@ export const loginSchema = yup.object({
     .max(100, 'Password must be less than 100 characters'),
 });
 
-// Tambahkan schema untuk register stan
-export const registerStanSchema = yup.object({
+// Tambahkan schema untuk register
+export const registerSchema = yup.object({
   username: yup
     .string()
     .required('Username is required')
@@ -25,23 +25,30 @@ export const registerStanSchema = yup.object({
     .required('Password is required')
     .min(6, 'Password must be at least 6 characters')
     .max(100, 'Password must be less than 100 characters'),
-  nama_stan: yup
+  role: yup
     .string()
-    .required('Nama stan is required')
-    .min(2, 'Nama stan must be at least 2 characters')
-    .max(100, 'Nama stan must be less than 100 characters'),
-  nama_pemilik: yup
+    .required('Role is required')
+    .oneOf(['student', 'admin'], 'Role must be student or admin'),
+  name: yup
     .string()
-    .required('Nama pemilik is required')
-    .min(2, 'Nama pemilik must be at least 2 characters')
-    .max(100, 'Nama pemilik must be less than 100 characters'),
-  telp: yup
+    .required('Name is required')
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name must be less than 100 characters'),
+  email: yup
     .string()
-    .required('Telp is required')
-    .matches(/^[0-9]+$/, 'Telp must be a valid phone number')
-    .min(10, 'Telp must be at least 10 digits')
-    .max(15, 'Telp must be less than 15 digits'),
+    .required('Email is required')
+    .email('Email must be a valid email address'),
+  phone: yup
+    .string()
+    .required('Phone is required')
+    .matches(/^[0-9]+$/, 'Phone must be a valid phone number')
+    .min(10, 'Phone must be at least 10 digits')
+    .max(15, 'Phone must be less than 15 digits'),
+  rfid_card: yup
+    .string()
+    .required('RFID card is required')
+    .min(1, 'RFID card is required'),
 });
 
 export type LoginSchemaType = yup.InferType<typeof loginSchema>;
-export type RegisterStanSchemaType = yup.InferType<typeof registerStanSchema>;
+export type RegisterSchemaType = yup.InferType<typeof registerSchema>;
