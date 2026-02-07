@@ -34,7 +34,7 @@ export default function Sidebar({ role }: SidebarProps) {
   const menuItems = role === 'admin' ? [
     { text: 'Category', icon: <DashboardIcon />, path: '/admin/category' },
     { text: 'Manage Stand', icon: <PeopleIcon />, path: '/admin/stand' },
-    { text: 'Register Stan', icon: <StoreIcon />, path: '/admin/register-stan' },
+    { text: 'Global Setting', icon: <StoreIcon />, path: '/admin/global' },
   ] : [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/stand' },
     { text: 'Menu', icon: <InventoryIcon />, path: '/stand/menu' },
